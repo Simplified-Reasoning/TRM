@@ -1,7 +1,7 @@
 
 <div align="center" style="margin-top:0; padding-top:0;">
   <h1 style="margin-top:0; padding-top:0;">
-    Characterizing, Evaluating, and Optimizing <br> Complex Reasoning (ICML 2026 Oral)
+    Characterizing, Evaluating, and Optimizing <br> Complex Reasoning
   </h1>
   <h4>
     <a href="https://arxiv.org/abs/2602.08498">
