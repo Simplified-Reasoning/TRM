@@ -44,7 +44,7 @@ The main process:
 # 🎉News
 - **[2026/05/24]** 🎉 Our paper has been accepted as an **Oral Presentation** at **ICML 2026**! We warmly welcome you to join us for discussions at the venue.
 
-- 
+
 ## Install required packages
 ```bash
 pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126
