@@ -17,6 +17,7 @@
 </div>
 
 
+
 This repository provides the TRM-Preference dataset, TRM weights, and implementations for TRM training and TRM-guided policy optimization.
 
 The **Thinking Reward Model (TRM)** evaluates the quality of *reasoning traces* rather than final answers. We study how to optimize reasoning itself: instead of only asking “Is the answer correct?”, we ask:
@@ -40,6 +41,10 @@ The main process:
   <img src="assets/process.png" style="width:100%;" />
 </p>
 
+# 🎉News
+- **[2026/05/24]** 🎉 Our paper has been accepted as an **Oral Presentation** at **ICML 2026**! We warmly welcome you to join us for discussions at the venue.
+
+- 
 ## Install required packages
 ```bash
 pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126
