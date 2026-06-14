@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TRM | Characterizing, Evaluating, and Optimizing Complex Reasoning</title>
+  <meta name="description"
+    content="TRM evaluates reasoning traces rather than final answers, using ME2 reasoning-quality principles, DAG-based evaluation, and thinking rewards for complex reasoning.">
+  <meta property="og:title" content="Characterizing, Evaluating, and Optimizing Complex Reasoning">
+  <meta property="og:description"
+    content="ICML 2026 Oral. TRM turns reasoning trace quality into a measurable and optimizable signal.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/process.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#">TRM</a>
+      <div class="nav-links">
+        <a href="#abstract">Abstract</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#resources">Resources</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section-shell">
+      <p class="paper-kicker">
+        ICML 2026
+        <span class="oral-badge">Oral Presentation</span>
+      </p>
+      <h1>Characterizing, Evaluating, and Optimizing Complex Reasoning</h1>
+      <p class="paper-summary">
+        Large Reasoning Models should do more than reach the right answer. TRM makes reasoning trace
+        quality measurable and usable for test-time selection and reinforcement learning.
+      </p>
+
+      <ul class="authors" aria-label="Authors and affiliations">
+        <li>Haoran Zhang<sup>1,2</sup></li>
+        <li>Yafu Li<sup>2,4,†</sup></li>
+        <li>Zhi Wang<sup>5,2</sup></li>
+        <li>Zhilin Wang<sup>2,3</sup></li>
+        <li>Shunkai Zhang<sup>2,6</sup></li>
+        <li>Xiaoye Qu<sup>2</sup></li>
+        <li>Yu Cheng<sup>4,2,†</sup></li>
+      </ul>
+
+      <ol class="affiliations" aria-label="Affiliations">
+        <li><sup>1</sup>School of Artificial Intelligence, Shanghai Jiao Tong University</li>
+        <li><sup>2</sup>Shanghai Artificial Intelligence Laboratory</li>
+        <li><sup>3</sup>University of Science and Technology of China</li>
+        <li><sup>4</sup>The Chinese University of Hong Kong</li>
+        <li><sup>5</sup>Nanjing University</li>
+        <li><sup>6</sup>Peking University</li>
+      </ol>
+      <p class="corresponding"><sup>†</sup>Corresponding authors: Yafu Li and Yu Cheng</p>
+
+      <div class="resource-actions" aria-label="Paper resources">
+        <a class="action-button primary" href="https://arxiv.org/pdf/2602.08498" aria-label="Open paper PDF">
+          <span class="button-icon" aria-hidden="true">PDF</span>
+          Paper
+        </a>
+        <a class="action-button" href="https://arxiv.org/abs/2602.08498" aria-label="Open arXiv page">
+          <span class="button-icon" aria-hidden="true">arXiv</span>
+          arXiv
+        </a>
+        <a class="action-button" href="https://github.com/Simplified-Reasoning/TRM" aria-label="Open code">
+          <span class="button-icon" aria-hidden="true">&lt;/&gt;</span>
+          Code
+        </a>
+        <a class="action-button" href="https://huggingface.co/zzzhr97/TRM-8B" aria-label="Open model">
+          <span class="button-icon" aria-hidden="true">HF</span>
+          Model
+        </a>
+        <a class="action-button" href="https://huggingface.co/datasets/zzzhr97/TRM-Preference"
+          aria-label="Open dataset">
+          <span class="button-icon" aria-hidden="true">Data</span>
+          Dataset
+        </a>
+      </div>
+
+      <figure class="teaser">
+        <img src="assets/process.png"
+          alt="Overview of the TRM framework: characterize reasoning quality, evaluate traces with DAG-based pairwise comparison, and optimize reasoning with a Thinking Reward Model.">
+        <figcaption>
+          <strong>TRM overview.</strong> Characterize reasoning quality with ME<sup>2</sup>, evaluate
+          free-form traces through DAG-based pairwise comparison, and train a Thinking Reward Model for
+          selection and policy optimization.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="abstract" class="section-shell paper-section">
+      <div class="section-heading">
+        <p class="section-label">Overview</p>
+        <h2>Reasoning Quality, Made Explicit</h2>
+        <p>
+          Large Reasoning Models now produce long traces with rich intermediate structure. A correct final
+          answer can still hide redundant detours, fragile local steps, or reasoning paths that are hard to
+          compare and optimize.
+        </p>
+        <p>
+          TRM organizes the problem around three questions: how to characterize reasoning quality, how to
+          evaluate free-form traces, and how to optimize models with that signal. The resulting Thinking
+          Reward Model scores reasoning trace quality; it complements final-answer verification rather than
+          replacing it.
+        </p>
+      </div>
+      <div class="overview-points" aria-label="TRM problem framing">
+        <article>
+          <h3>Characterizing</h3>
+          <p>Define trace quality through macro/micro structure and efficiency/effectiveness objectives.</p>
+        </article>
+        <article>
+          <h3>Evaluating</h3>
+          <p>Turn free-form traces into DAGs so progression, branching, and merging are visible.</p>
+        </article>
+        <article>
+          <h3>Optimizing</h3>
+          <p>Train TRM on pairwise preferences and use it for selection and reinforcement learning.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="method" class="section-shell paper-section">
+      <div class="section-heading">
+        <p class="section-label">Approach</p>
+        <h2>Three Pieces of the Pipeline</h2>
+        <p>
+          TRM keeps the quality signal focused on the reasoning trace itself. It first names the quality
+          dimensions, then obtains structured pairwise preferences, and finally trains a reward model for
+          downstream use.
+        </p>
+      </div>
+      <div class="method-flow" aria-label="Method overview">
+        <article>
+          <span class="step-number">01</span>
+          <h3>ME<sup>2</sup> Principle</h3>
+          <p>
+            ME<sup>2</sup> characterizes reasoning quality along two axes: macro versus micro granularity,
+            and efficiency versus effectiveness.
+          </p>
+        </article>
+        <article>
+          <span class="step-number">02</span>
+          <h3>DAG-based Pairwise Evaluation</h3>
+          <p>
+            Free-form traces are converted into DAGs, making progression, branching, and merging explicit
+            before pairwise comparison.
+          </p>
+        </article>
+        <article>
+          <span class="step-number">03</span>
+          <h3>Thinking Reward Model</h3>
+          <p>
+            TRM learns from preference pairs to score reasoning trace quality, providing a reward that is
+            complementary to answer verifiers.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell figure-section">
+      <div class="section-heading">
+        <p class="section-label">Characterization</p>
+        <h2>What Counts as Better Thinking?</h2>
+        <p>
+          ME<sup>2</sup> gives a compact vocabulary for trace quality. It separates whether reasoning is
+          globally organized from whether each local step is useful and valid.
+        </p>
+      </div>
+      <figure class="wide-figure">
+        <img src="assets/ME2.png"
+          alt="The ME2 principle divides reasoning quality by macro versus micro granularity and efficiency versus effectiveness objectives.">
+      </figure>
+      <div class="dimension-grid" aria-label="ME2 dimensions">
+        <article>
+          <h3>Macro-Efficiency</h3>
+          <p>Does the trace avoid unnecessary branches, repeated detours, and overlong global plans?</p>
+        </article>
+        <article>
+          <h3>Macro-Effectiveness</h3>
+          <p>Does the overall structure stay aligned with the problem and move toward a solution?</p>
+        </article>
+        <article>
+          <h3>Micro-Efficiency</h3>
+          <p>Are individual steps concise, non-redundant, and placed where they actually help?</p>
+        </article>
+        <article>
+          <h3>Micro-Effectiveness</h3>
+          <p>Are local calculations, claims, and transitions valid enough to support the trace?</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-shell figure-section">
+      <div class="section-heading">
+        <p class="section-label">Structured Evaluation</p>
+        <h2>How the DAG Is Built</h2>
+        <p>
+          A trace is first split into atomic reasoning steps. Edges are then inferred from semantic
+          dependencies, using the generation order as a topological order so later steps can depend on
+          earlier ones, but not the other way around.
+        </p>
+      </div>
+      <figure class="wide-figure">
+        <img src="assets/structure.png"
+          alt="A reasoning DAG abstraction showing progression, branching, and merging structures.">
+      </figure>
+      <ol class="process-list" aria-label="DAG construction steps">
+        <li>
+          <span>Step partitioning</span>
+          Break the reasoning trace into smaller units that can serve as graph nodes.
+        </li>
+        <li>
+          <span>Dependency inference</span>
+          For each new node, select semantically relevant parents from earlier candidate nodes.
+        </li>
+        <li>
+          <span>Structure compression</span>
+          Merge simple linear chains into super-nodes so the graph keeps the important structure visible.
+        </li>
+        <li>
+          <span>Pairwise judgment</span>
+          Compare traces under the ME<sup>2</sup> dimensions, then keep stable non-tie preferences.
+        </li>
+      </ol>
+    </section>
+
+    <section class="section-shell paper-section">
+      <div class="section-heading">
+        <p class="section-label">Data Construction</p>
+        <h2>From Correct Traces to TRM-Preference</h2>
+        <p>
+          TRM-Preference is built from verified-correct reasoning traces so that supervision focuses on
+          trace quality rather than final-answer correctness. For each problem, multiple reasoning models
+          generate candidate traces; only traces whose final answers are accepted by rule-based verifiers
+          enter the preference pipeline.
+        </p>
+        <p>
+          The remaining traces are compared with DAG-based pairwise evaluation. The final dataset contains
+          103K training preference pairs and 1.5K validation pairs, decoupling reasoning quality from
+          final-answer correctness.
+        </p>
+      </div>
+      <div class="data-pipeline" aria-label="TRM-Preference construction">
+        <article>
+          <span>01</span>
+          Generate candidate reasoning traces from open-source reasoning models.
+        </article>
+        <article>
+          <span>02</span>
+          Filter by final-answer correctness with rule-based verifiers.
+        </article>
+        <article>
+          <span>03</span>
+          Convert traces to DAGs and compare them under ME<sup>2</sup>.
+        </article>
+        <article>
+          <span>04</span>
+          Train a Thinking Reward Model to score reasoning trace quality.
+        </article>
+      </div>
+    </section>
+
+    <section id="results" class="section-shell">
+      <div class="section-heading">
+        <p class="section-label">Evidence</p>
+        <h2>Compact Results</h2>
+        <p>
+          TRM reaches 88.6% validation accuracy on pairwise trace preference, above ReasonFlux-PRM-7B
+          (62.5%) and Qwen2.5-Math-PRM-7B (46.3%). Downstream experiments use this trace-quality score
+          for Best-of-N selection and as an auxiliary RL reward.
+        </p>
+      </div>
+
+      <div class="result-summary" aria-label="Result summary">
+        <p><strong>Validation.</strong> 88.6% preference accuracy on TRM-Preference validation.</p>
+        <p><strong>Test-time selection.</strong> Best-of-N selection brings up to 19.3% improvement.</p>
+        <p><strong>RL.</strong> TRM usually adds 2% to 4% over verifier reward, including 3.9% STEM and
+          3.8% Math gains on Llama-3.1-8B-Instruct.</p>
+      </div>
+
+      <div class="results-grid" aria-label="Result figures">
+        <figure>
+          <div class="figure-scroll">
+            <img src="assets/validation.png"
+              alt="Validation accuracy comparison showing TRM above ReasonFlux-PRM-7B and Qwen2.5-Math-PRM-7B.">
+          </div>
+          <figcaption>
+            <strong>Preference validation.</strong> TRM reaches 88.6% accuracy, compared with 62.5% for
+            ReasonFlux-PRM-7B and 46.3% for Qwen2.5-Math-PRM-7B.
+            <a class="open-note" href="assets/validation.png" target="_blank" rel="noopener">Open full figure</a>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="figure-scroll">
+            <img src="assets/bon.png"
+              alt="Best-of-N selection results showing gains from TRM-guided trace-quality scoring.">
+          </div>
+          <figcaption>
+            <strong>Test-time selection.</strong> TRM-guided Best-of-N selection improves downstream accuracy,
+            with gains up to 19.3%.
+            <a class="open-note" href="assets/bon.png" target="_blank" rel="noopener">Open full figure</a>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="figure-scroll">
+            <img src="assets/rl.png"
+              alt="Reinforcement learning results comparing verifier reward and TRM-assisted reward training.">
+          </div>
+          <figcaption>
+            <strong>Reinforcement learning.</strong> TRM commonly adds 2% to 4% over verifier reward, including
+            3.9% STEM and 3.8% Math gains on Llama-3.1-8B-Instruct.
+            <a class="open-note" href="assets/rl.png" target="_blank" rel="noopener">Open full figure</a>
+          </figcaption>
+        </figure>
+        <figure>
+          <div class="figure-scroll">
+            <img src="assets/reasoning.png"
+              alt="Reasoning quality analysis showing how trace-quality reward differs from answer verification.">
+          </div>
+          <figcaption>
+            <strong>Reasoning trace quality.</strong> TRM supplies a trace-quality reward that is distinct from
+            and complementary to final-answer verification.
+            <a class="open-note" href="assets/reasoning.png" target="_blank" rel="noopener">Open full figure</a>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="resources" class="section-shell paper-section">
+      <div class="section-heading">
+        <p class="section-label">Resources</p>
+        <h2>Code, Model, and Data</h2>
+        <p>
+          The project releases TRM-Preference, TRM-8B weights, and code for scoring, reward-model training,
+          and TRM-guided policy optimization.
+        </p>
+      </div>
+      <div class="resource-list">
+        <a href="https://github.com/Simplified-Reasoning/TRM">
+          <strong>GitHub Repository</strong>
+          <span>Code for training, scoring, and TRM-guided reinforcement learning.</span>
+        </a>
+        <a href="https://huggingface.co/zzzhr97/TRM-8B">
+          <strong>TRM-8B Model</strong>
+          <span>Released Thinking Reward Model weights for reasoning trace quality scoring.</span>
+        </a>
+        <a href="https://huggingface.co/datasets/zzzhr97/TRM-Preference">
+          <strong>TRM-Preference Dataset</strong>
+          <span>103K training preference pairs and 1.5K validation pairs.</span>
+        </a>
+        <a href="https://arxiv.org/abs/2602.08498">
+          <strong>arXiv:2602.08498</strong>
+          <span>Paper page for Characterizing, Evaluating, and Optimizing Complex Reasoning.</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="citation" class="section-shell paper-section">
+      <div class="section-heading">
+        <p class="section-label">Reference</p>
+        <h2>Citation</h2>
+      </div>
+      <div class="citation-box">
+        <button class="copy-button" type="button" data-copy-target="bibtex">Copy</button>
+        <pre id="bibtex"><code>@article{zhang2026characterizing,
+  title={Characterizing, Evaluating, and Optimizing Complex Reasoning},
+  author={Zhang, Haoran and Li, Yafu and Wang, Zhi and Wang, Zhilin and Zhang, Shunkai and Qu, Xiaoye and Cheng, Yu},
+  journal={arXiv preprint arXiv:2602.08498},
+  year={2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Characterizing, Evaluating, and Optimizing Complex Reasoning · ICML 2026 Oral</p>
+  </footer>
+
+  <script>
+    const copyButton = document.querySelector("[data-copy-target]");
+    copyButton?.addEventListener("click", async () => {
+      const target = document.getElementById(copyButton.dataset.copyTarget);
+      if (!target) return;
+      await navigator.clipboard.writeText(target.innerText.trim());
+      copyButton.textContent = "Copied";
+      window.setTimeout(() => {
+        copyButton.textContent = "Copy";
+      }, 1600);
+    });
+  </script>
+</body>
+
+</html>
