@@ -1,18 +1,22 @@
 [
   {
-    "prompt": "A train trip has a fixed distance and the same short stop each time. The first plan takes 5 hours at speed v. A faster plan takes 4 hours at speed v+15. Find the total time for a third plan at speed v+10 with the same stop.",
+    "prompt": "How many integers n with 1 <= n <= 200 make n^2 + 5n + 6 divisible by 30?",
     "steps": [
-      "Let the distance be d miles and the stop time be h hours.",
-      "From the first plan, d/v + h = 5.",
-      "From the faster plan, d/(v+15) + h = 4.",
-      "One tempting branch is to treat the one-hour saving as if it came directly from adding 15 mph.",
-      "On that shortcut, adding 10 mph would save about two thirds of an hour, giving a rough answer near 4 hours 20 minutes.",
-      "But that branch is shaky: the trip has a fixed distance, so the time saved cannot be scaled directly from the speed increase.",
-      "I should go back to the two trip equations and compare the travel-time parts instead.",
-      "Subtracting the two equations gives d/v - d/(v+15) = 1.",
-      "Solving the equations gives v = 30, d = 90, and h = 2 hours.",
-      "For the third plan, the travel time is 90/(30+10) = 2.25 hours.",
-      "Therefore the total third-plan time is 2.25 + 2 = 4.25 hours, or 255 minutes."
+      "We need 30 to divide n^2 + 5n + 6, so first factor it as (n+2)(n+3).",
+      "Divisibility by 2 adds no restriction, because n+2 and n+3 are consecutive numbers and one of them is always even.",
+      "For divisibility by 3, checking n modulo 3 shows that the product fails only when n is congruent to 2 modulo 3, so n must be 0 or 1 modulo 3.",
+      "For divisibility by 5, one of n+2 and n+3 must be a multiple of 5, so n is congruent to 3 or 2 modulo 5.",
+      "First follow the branch n congruent to 0 modulo 3. Pairing it with n congruent to 2 modulo 5 gives n congruent to 12 modulo 15.",
+      "The same n congruent to 0 modulo 3 branch paired with n congruent to 3 modulo 5 gives n congruent to 3 modulo 15, so this branch contributes residues 12 and 3.",
+      "Now return to the split from the modulo-3 condition and take the other allowed branch, n congruent to 1 modulo 3.",
+      "Pairing n congruent to 1 modulo 3 with n congruent to 2 modulo 5 gives n congruent to 7 modulo 15.",
+      "Pairing n congruent to 1 modulo 3 with n congruent to 3 modulo 5 gives n congruent to 13 modulo 15, so the second branch contributes residues 7 and 13.",
+      "Combining the two residue branches, the valid classes modulo 15 are 3, 7, 12, and 13.",
+      "A quick counting shortcut would say each of the four classes appears about 14 times up to 200, suggesting 56 values.",
+      "That shortcut is too rough near the upper endpoint, so go back to the four exact residue classes and count by complete 15-number blocks.",
+      "There are 13 complete blocks from 1 to 195, and each block contains exactly four valid residues.",
+      "The remaining numbers are 196 through 200; only 198 is congruent to one of 3, 7, 12, and 13 modulo 15.",
+      "Therefore the total count is 13*4 + 1 = 53 integers."
     ]
   }
 ]

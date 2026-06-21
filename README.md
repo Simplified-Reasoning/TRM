@@ -20,8 +20,6 @@
 
 This repository provides the TRM-Preference dataset, TRM weights, and implementations for TRM training and TRM-guided policy optimization.
 
-For modular reasoning-trace DAG construction, see [`dag_construction/`](dag_construction/).
-
 The **Thinking Reward Model (TRM)** evaluates the quality of *reasoning traces* rather than final answers. We study how to optimize reasoning itself: instead of only asking “Is the answer correct?”, we ask:
 
 > **Is this a good way to think?**
@@ -60,6 +58,10 @@ pip install transformers==4.56.1
 pip install flashinfer-python
 pip install math-verify
 ```
+
+## DAG Construction
+
+Reference implementation for turning a reasoning trace into a DAG via `partition` → `build_dag` → `merge_view`. See [`dag_construction/`](dag_construction/) for usage and per-step customization.
 
 ## TRM Scoring
 
