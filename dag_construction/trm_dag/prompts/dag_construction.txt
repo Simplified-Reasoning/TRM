@@ -1,0 +1,94 @@
+### Goal
+You will receive a sequence of reasoning steps.
+For exactly one target step **s$current_id**, you must decide how it connects to earlier steps.
+
+You must classify this connection as exactly ONE of:
+- continue
+- backtrack
+- merge
+
+### Input Format
+The input block contains only:
+  - s0
+  - steps whose IDs are on the current available main path
+  - the current step s$current_id
+  - and (in a separate section) a small set of OTHER_OPEN_BRANCH_LEAVES, which are leaf steps from other branches
+
+### Output Format
+For the single target step s$current_id, output exactly:
+
+1. **One short line explanation** (1-2 lines) of what s$current_id is doing or how it relates to earlier steps. Explain whether it is a normal continuation, a backtrack/restart from an earlier step, or is merging branches.
+
+2. A line of the exact form:
+   <|action|>continue
+   OR
+   <|action|>backtrack
+   OR
+   <|action|>merge
+
+3. If (and only if) the action is:
+   - backtrack:
+        You MUST also output a single parent marker line in the exact form
+        <|previous|>K
+        where:
+        - K is an integer step ID **strictly less than $current_id.
+        - K must be chosen from the steps on the current main path in the Input Block.
+        - K must be strictly earlier than $last_previous_step_id.
+        - Never invent new or unseen step IDs.
+
+   - merge:
+        You MUST also output a parent marker line in the exact form
+        <|previous|>K1,K2,...
+        where:
+        - K1,K2,... are two or more integer step IDs.
+        - All IDs must be **strictly less than $current_id.
+        - At least one of these IDs must come from OTHER_OPEN_BRANCH_LEAVES.
+        - Never invent new or unseen step IDs.
+
+   - continue:
+        You DO NOT output a <|previous|>... line. (It is implicitly understood that the parent is $last_previous_step_id.)
+
+### Input Block
+$input_steps
+
+### Previous Step Selection Rules
+
+- If s$current_id logically continues from the most recent step on the current main path, classify as **continue**. (No <|previous|> line is needed in this case.)
+
+- Otherwise, treat as **backtrack** if s$current_id is restarting / revisiting / re-checking an earlier point on the SAME main path.
+  In this case you must output <|action|>backtrack and then <|previous|>K for that earlier step K.
+
+- Rarely, if s$current_id is explicitly combining reasoning from more than one branch (for example, it is stitching together partial arguments from two different leaf steps, at least one of which is from OTHER_OPEN_BRANCH_LEAVES), classify as **merge**.
+  In this case you must output <|action|>merge and then <|previous|>K1,K2,... with two or more parent IDs.
+
+### Backtracking
+
+If s$current_id appears to the following patterns, it is likely to **backtrack to K < $last_previous_step_id** in the available steps:
+1. The steps before step K contain sufficient information to derive s$current_id, so that the sequence of previous steps before K + s$current_id can be seen as (part of) a logical flow.
+2. The steps after step K contain extensive reasoning information that is similar to s$current_id, making them redundant or repetitive.
+3. Step K should be selected as large as possible (i.e., the nearest valid earlier step).
+4. s$current_id may show reflection, restart, or repetition (RRR) patterns, such as: "Alternatively...", "Let me check again...", etc.
+
+### Merging
+
+If s$current_id is actively combining reasoning from multiple branches, it is likely to **merge**:
+1. At least 1 from other branches and at most 1 from the main path must be included.
+2. Only applies when earlier reasoning actually branched: multiple sibling branches explored different possibilities at roughly the same stage, and now s$current_id is explicitly stitching those partial results together to form a single next conclusion. In that case, s$current_id should inherit from BOTH of those branch tips.
+4. Merging is rare and should only be used when there is clear evidence of combining distinct prior lines of reasoning.
+
+Note:
+- If s$current_id lacks explicit reference to the content of earlier steps from other branches, it should generally NOT be classified as a **merge**. If s$current_id is combining results from different nodes in the main path only, treat it as **continue** or **backtrack**.
+- Even if the sentence expresses a contrastive meaning (e.g., shows transition or "however"-like tone), if it continues a sequential analysis and does not repeat prior reasoning, treat it as a normal **continue**.
+- If the last previous step is an RRR step that carries only the RRR meaning without actual analysis, and it **initiated a new branch**, then the current s$current_id is likely following that RRR lead into the new branch and should be treated as a normal **continue**.
+- If s$current_id does not explicitly indicate that the current step is based on certain steps from other branches, do NOT use **merge**.
+- Even if s$current_id states it continues from an earlier step, if the main path already contains the information mentioned in other branches, use **backtrack** instead of **merge**.
+- **continue** and **backtrack** is common. While in doubt, prefer **continue**.
+
+Available main-path steps (in order): $available_steps
+Available other-branch leaf steps: $leaf_steps
+
+Output:
+Explanation text here (CONCISE, 1-2 lines)
+<|action|>...
+[optional if backtrack (exactly 1 previous step) or merge (>= 2 previous steps, at least 1 from other branches and at most 1 from the main path)]
+<|previous|>...

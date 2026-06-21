@@ -20,6 +20,8 @@
 
 This repository provides the TRM-Preference dataset, TRM weights, and implementations for TRM training and TRM-guided policy optimization.
 
+For modular reasoning-trace DAG construction, see [`dag_construction/`](dag_construction/).
+
 The **Thinking Reward Model (TRM)** evaluates the quality of *reasoning traces* rather than final answers. We study how to optimize reasoning itself: instead of only asking “Is the answer correct?”, we ask:
 
 > **Is this a good way to think?**

@@ -1,0 +1,18 @@
+[
+  {
+    "prompt": "A train trip has a fixed distance and the same short stop each time. The first plan takes 5 hours at speed v. A faster plan takes 4 hours at speed v+15. Find the total time for a third plan at speed v+10 with the same stop.",
+    "steps": [
+      "Let the distance be d miles and the stop time be h hours.",
+      "From the first plan, d/v + h = 5.",
+      "From the faster plan, d/(v+15) + h = 4.",
+      "One tempting branch is to treat the one-hour saving as if it came directly from adding 15 mph.",
+      "On that shortcut, adding 10 mph would save about two thirds of an hour, giving a rough answer near 4 hours 20 minutes.",
+      "But that branch is shaky: the trip has a fixed distance, so the time saved cannot be scaled directly from the speed increase.",
+      "I should go back to the two trip equations and compare the travel-time parts instead.",
+      "Subtracting the two equations gives d/v - d/(v+15) = 1.",
+      "Solving the equations gives v = 30, d = 90, and h = 2 hours.",
+      "For the third plan, the travel time is 90/(30+10) = 2.25 hours.",
+      "Therefore the total third-plan time is 2.25 + 2 = 4.25 hours, or 255 minutes."
+    ]
+  }
+]

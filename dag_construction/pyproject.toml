@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trm-dag"
+version = "0.1.0"
+description = "A small, hackable DAG builder for TRM reasoning traces."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Haoran Zhang"}]
+dependencies = [
+  "openai>=1.0",
+  "python-dotenv>=1.0",
+  "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.5",
+  "mypy>=1.10",
+]
+
+[project.scripts]
+trm-dag = "trm_dag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["trm_dag*"]
+exclude = ["scripts*", "tests*"]
+
+[tool.setuptools.package-data]
+trm_dag = ["prompts/*.txt"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_return_any = true
+disallow_any_generics = false
+
+[[tool.mypy.overrides]]
+module = ["openai", "dotenv", "rich.*"]
+ignore_missing_imports = true
